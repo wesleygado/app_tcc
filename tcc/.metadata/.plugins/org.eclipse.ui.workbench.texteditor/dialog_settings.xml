@@ -13,13 +13,17 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="DrawerItemClickListener " key="selection"/>
+		<item value="&quot;" key="selection"/>
 		<list key="findhistory">
+			<item value="”"/>
+			<item value="log"/>
+			<item value="Log"/>
 			<item value="DrawerItemClickListener "/>
 			<item value="mDrawerToggle"/>
 			<item value="mDrawerLayout"/>
 		</list>
 		<list key="replacehistory">
+			<item value="&quot;"/>
 		</list>
 	</section>
 </section>

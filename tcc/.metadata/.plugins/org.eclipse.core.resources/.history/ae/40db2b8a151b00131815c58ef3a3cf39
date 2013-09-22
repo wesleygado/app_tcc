@@ -1,0 +1,114 @@
+package com.hunters.hunterfood;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.TextView;
+
+public class ConsumirJson extends AsyncTask<Void, Void, String>{
+	
+	private ProgressDialog dialog;
+	private TextView txtResposta;
+	
+	private String toString(InputStream is) throws IOException{  
+			  
+		byte[] bytes = new byte[1024];  
+		ByteArrayOutputStream baos =  new ByteArrayOutputStream();  
+		int lidos;  
+		while ((lidos = is.read(bytes)) > 0){  
+			baos.write(bytes, 0, lidos);  
+		}  
+		return new String(baos.toByteArray());  
+	}
+
+	public String getRESTFileContent(String url) {  
+		HttpClient httpclient = new DefaultHttpClient();  
+		HttpGet httpget = new HttpGet(url);  
+		  
+		try {  
+			HttpResponse response = httpclient.execute(httpget);  
+		  
+			HttpEntity entity = response.getEntity();  
+		  
+		    if (entity != null) {  
+		    	InputStream instream = entity.getContent();  
+		    	String result = toString(instream);  
+		  
+		    	instream.close();  
+		    	return result;  
+		    }  
+		  } catch (Exception e) {  
+			  Log.e("NGVL", "Falha ao acessar Web service", e);  
+		  }  
+		return null;  
+	}
+
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		txtResposta.setText("");
+		dialog = ProgressDialog.show(this, "Aguarde",
+				"Acessando WS...");
+	}
+
+	@Override
+	protected String doInBackground(Void... params) {
+		return lerTodasPessoas();
+	}
+
+	@Override
+	protected void onPostExecute(String result) {
+		super.onPostExecute(result);
+		if (txtResposta == null){
+			txtResposta.setText("Erro ao acessar web service");
+		} else {
+			txtResposta.setText(result);
+		}
+		dialog.dismiss();
+	}
+	
+	private String lerTodasPessoas() {
+		String result = getRESTFileContent("http://10.0.2.2:8080/ExemploRESTServer/rest/pessoas/");
+		if (result == null) {
+			Log.e("NGVL", "Falha ao acessar WS");
+			return null;
+		}
+
+		try {
+			JSONObject json = new JSONObject(result);
+			JSONArray pessoasArray = json.getJSONArray("pessoa");
+
+			JSONObject pessoaJson;
+
+			StringBuffer sb = new StringBuffer();
+			
+			for (int i = 0; i < pessoasArray.length(); i++) {
+				pessoaJson = new JSONObject(pessoasArray.getString(i));
+
+				sb.append("id=" + pessoaJson.getInt("id"));
+				sb.append("|nome=" + pessoaJson.getString("nome"));
+				sb.append('\n');
+			}
+			
+			return sb.toString();
+			
+		} catch (JSONException e) {
+			Log.e("NGVL", "Erro no parsing do JSON", e);
+		}
+		return null;
+	}
+
+}

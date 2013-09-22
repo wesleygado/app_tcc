@@ -1,0 +1,88 @@
+package com.hunters.hunterfood;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+public class HomeActivity extends Activity {
+	
+	private ListView lista;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_home);
+		
+		lista = (ListView) findViewById(R.id.lista_restaurantes);
+		
+		new RestaurantesTask().execute();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.home, menu);
+		return true;
+	}
+	
+	private class RestaurantesTask extends AsyncTask<String, Void, String[]> {
+
+		ProgressDialog dialog;
+		
+		@Override
+		protected void onPreExecute() {
+			dialog = new ProgressDialog(HomeActivity.this);
+			dialog.show();
+		}
+		
+		@Override
+		protected void onPostExecute(String[] result) {
+			if(result != null){
+					ArrayAdapter<String> adapter =	new ArrayAdapter<String>(getBaseContext(),	android.R.layout.simple_list_item_1, result);
+					lista.setAdapter(adapter);
+			}
+			dialog.dismiss();
+		}
+		
+		@Override
+		protected String[] doInBackground(String... params) { 
+			try {
+				
+				String urlTwitter = "http://search.twitter.com/search.json?q=";
+				String url = Uri.parse(urlTwitter).toString();
+				String conteudo = ConsumirJson.acessar(url);
+				
+				
+				// pegamos o resultado
+				JSONObject jsonObject = new JSONObject(conteudo);
+				JSONArray resultados = jsonObject.getJSONArray("results");
+				
+				// montamos o resultado
+				String[] tweets = new String[resultados.length()];
+				
+				for (int i = 0; i < resultados.length(); i++) {
+					
+					JSONObject tweet = resultados.getJSONObject(i);
+					String texto = tweet.getString("text");
+					String usuario = tweet.getString("from_user");
+					tweets[i] = usuario + " - " + texto;
+					
+				}
+				
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+		}
+	
+	}
+
+}

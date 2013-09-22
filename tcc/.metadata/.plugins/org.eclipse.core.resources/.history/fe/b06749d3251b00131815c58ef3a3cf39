@@ -1,0 +1,9 @@
+package com.hunters.hunterfood;
+
+import android.os.StrictMode;
+
+public class ConsumirJson {
+	
+	
+
+}

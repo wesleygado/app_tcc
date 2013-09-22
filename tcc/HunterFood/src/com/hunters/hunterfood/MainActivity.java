@@ -26,21 +26,19 @@ public class MainActivity extends ActivityGroup {
 		//Cada Tab adicionada tem sua própria Activity, que por sua vez , tem seu próprio .xml(layout) e //também tem um elemento Drawable. Esse elemento eu usei para mudar o ícone da Tab.
 		//Quando ela não está ativa, o ícone é cinza. Quando ela está ativa, o ícone fica colorido e indica //pro usuário que ele está naquela Tab.
 		
-		//Nesse meu exemplo, eu tenho 4 Tabs.4 Activities. 4 Layouts. 4 drawable que faz a mudança de ícone. // 1 para cada Tab.
-		
 		//Adiciona Tab #1
 		intent = new Intent().setClass(this, HomeActivity.class);
 		spec = tabHost.newTabSpec("0").setIndicator("Home").setContent(intent);
 		tabHost.addTab(spec);
 			
 		//Adiciona Tab #2
-		intent = new Intent().setClass(this, OndeEstouActivity.class);
-		spec = tabHost.newTabSpec("2").setIndicator("Onde Estou?").setContent(intent);
+		intent = new Intent().setClass(this, RestauranteActivity.class);
+		spec = tabHost.newTabSpec("1").setIndicator("Minhas Buscas").setContent(intent);
 		tabHost.addTab(spec);
 		
 		//Adiciona Tab #3
-		intent = new Intent().setClass(this, ListasActivity.class);
-		spec = tabHost.newTabSpec("3").setIndicator("Mapas").setContent(intent);
+		intent = new Intent().setClass(this, CurtirActivity.class);
+		spec = tabHost.newTabSpec("2").setIndicator("Curtir").setContent(intent);
 		tabHost.addTab(spec);
 		
 		//essa ultima linha indica qual tab será carregada ao iniciar essa activity. No nosso caso, a Primeira!!!

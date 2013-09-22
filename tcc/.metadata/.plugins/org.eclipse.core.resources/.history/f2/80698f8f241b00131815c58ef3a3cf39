@@ -1,0 +1,62 @@
+package com.hunters.hunterfood;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.view.Menu;
+import android.widget.TextView;
+
+public class HomeActivity extends Activity {
+	
+	private ProgressDialog dialog;
+	private TextView txtResposta;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_home);
+		
+		txtResposta = (TextView)findViewById(R.id.txtResposta);
+		
+		dialog = ProgressDialog.show(HomeActivity.this, getString(R.string.app_name), getString(R.string.carregando_restaurantes))
+		String response = makeRequest("http://graph.facebook.com/bruno.meiramelhado");
+		
+	}
+	
+	private String makeRequest(String urlAddress){
+		HttpURLConnection con = null;
+		URL url = null;
+		String response = null;
+		
+		try {
+			url = new URL(urlAddress);
+			con = (HttpURLConnection) url.openConnection();
+			response = readStream(con.getInputStream());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			con.disconnect();
+		}
+		
+		return response;
+	}
+	
+	private String readStream(InputStream in){
+		
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.home, menu);
+		return true;
+	}
+
+}
